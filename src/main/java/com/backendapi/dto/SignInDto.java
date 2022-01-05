@@ -1,4 +1,4 @@
-package com.backendapi.dto.json;
+package com.backendapi.dto;
 
 import com.backendapi.annotation.IsEmail;
 import lombok.Getter;

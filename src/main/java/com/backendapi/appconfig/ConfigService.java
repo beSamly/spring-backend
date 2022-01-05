@@ -1,6 +1,6 @@
 package com.backendapi.appconfig;
 
-import com.backendapi.dto.json.DatabaseConfig;
+import com.backendapi.dto.DatabaseConfig;
 import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.core.env.Environment;
 import org.springframework.core.io.ClassPathResource;

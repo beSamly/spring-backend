@@ -1,4 +1,4 @@
-package com.backendapi.dto.json;
+package com.backendapi.dto;
 
 public class Config {
     private DatabaseConfig databaseConfig;
