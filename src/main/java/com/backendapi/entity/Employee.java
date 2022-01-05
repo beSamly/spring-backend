@@ -1,5 +1,7 @@
 package com.backendapi.entity;
 
+import com.backendapi.annotation.IsEmail;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.Id;
@@ -11,6 +13,8 @@ public class Employee {
     private @Id
     @GeneratedValue
     Long id;
+
+    @IsEmail
     private String name;
     private String role;
 

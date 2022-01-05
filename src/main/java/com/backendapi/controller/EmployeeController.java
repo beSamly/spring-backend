@@ -1,9 +1,13 @@
 package com.backendapi.controller;
+
 import com.backendapi.entity.Employee;
+import com.backendapi.exception.MyCustomException;
 import com.backendapi.repository.EmployeeRepository;
+import org.springframework.data.jpa.repository.Query;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 class EmployeeController {
@@ -18,7 +22,9 @@ class EmployeeController {
     // tag::get-aggregate-root[]
     @GetMapping("/employees")
     List<Employee> all() {
-        return this.repository.findAll();
+
+        throw new RuntimeException("what the fuck is this");
+//        return this.repository.findAll();
     }
     // end::get-aggregate-root[]
 
@@ -30,10 +36,15 @@ class EmployeeController {
     // Single item
 
     @GetMapping("/employees/{id}")
-    Employee one(@PathVariable Long id) {
+    Employee getOne(@PathVariable Long id) throws MyCustomException {
 
-        return this.repository.findById(id)
-                .orElseThrow(() -> new RuntimeException("runtime sxception"));
+        Employee employee = this.repository.findById(id).orElse(null);
+
+        if(employee == null){
+            throw new MyCustomException("awef");
+        }
+
+        return employee;
     }
 
     @PutMapping("/employees/{id}")
