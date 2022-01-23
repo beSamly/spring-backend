@@ -1,12 +1,12 @@
 package com.backendapi.controller;
 
-import com.backendapi.dto.SignInDto;
-import com.backendapi.dto.SignUpDto;
+import com.backendapi.dto.SignInDTO;
+import com.backendapi.dto.SignUpDTO;
+import com.backendapi.dto.SuccessDTO;
 import com.backendapi.repository.AuthRepository;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RestController;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 
@@ -15,22 +15,30 @@ import javax.validation.Valid;
 public class AuthController {
 
     private final AuthRepository authRepository;
+    private final ObjectMapper objectMapper;
 
-    public AuthController(AuthRepository authRepository) {
+    public AuthController(AuthRepository authRepository, ObjectMapper objectMapper) {
         this.authRepository = authRepository;
+        this.objectMapper = objectMapper;
     }
 
     @PostMapping("/signin")
-    SignInDto signIn(@RequestBody @Valid SignInDto signInDto)
-    {
+    SignInDTO signIn(@RequestBody @Valid SignInDTO signInDto) {
         System.out.println(signInDto);
         return signInDto;
     }
 
     @PostMapping("/signup")
-    SignUpDto signUp(@RequestBody @Valid SignUpDto signUpDto)
-    {
-        System.out.println(signUpDto);
+    SignUpDTO signUp(@RequestBody @Valid SignUpDTO signUpDto) {
+        try {
+
+            String content = objectMapper.writeValueAsString(signUpDto);
+            System.out.println(content);
+
+        } catch (JsonProcessingException e) {
+
+        }
+
         return signUpDto;
     }
 }

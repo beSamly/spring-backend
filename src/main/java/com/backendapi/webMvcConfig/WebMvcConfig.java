@@ -11,16 +11,16 @@ import java.util.ArrayList;
 @Configuration
 public class WebMvcConfig implements WebMvcConfigurer {
 
-    private final RequestInterceptor requestInterceptor;
+//    private final RequestInterceptor requestInterceptor;
     private final AuthInterceptor authInterceptor;
 
-    public WebMvcConfig(AuthInterceptor authInterceptor, RequestInterceptor requestInterceptor) {
+    public WebMvcConfig(AuthInterceptor authInterceptor) {
         this.authInterceptor = authInterceptor;
-        this.requestInterceptor = requestInterceptor;
+//        this.requestInterceptor = requestInterceptor;
     }
 
     public void addInterceptors(InterceptorRegistry registry) {
-        registry.addInterceptor(this.requestInterceptor);
+//        registry.addInterceptor(this.requestInterceptor);
 
         ArrayList<String> list = new ArrayList<String>();
         list.add("/employees");

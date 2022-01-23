@@ -1,6 +1,10 @@
-package com.backendapi.annotation;
+package com.backendapi.custom_constraint;
 
-import com.backendapi.annotation.validator.EmailValidator;
+
+import com.backendapi.custom_constraint.validator.EmailValidator;
+import com.backendapi.custom_constraint.validator.PasswordValidator;
+import com.backendapi.error_message.ERROR_MESSAGE;
+
 import javax.validation.Constraint;
 import java.lang.annotation.ElementType;
 import java.lang.annotation.Retention;
@@ -11,7 +15,7 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = EmailValidator.class)
 public @interface IsEmail {
-    String message() default "should email";
+    String message() default ERROR_MESSAGE.INVALID_EMAIL;
     Class[] groups() default {};
     Class[] payload() default {};
 }

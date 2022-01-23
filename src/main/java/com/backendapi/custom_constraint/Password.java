@@ -1,7 +1,7 @@
 package com.backendapi.custom_constraint;
 
-import com.backendapi.annotation.validator.EmailValidator;
 import com.backendapi.custom_constraint.validator.PasswordValidator;
+import com.backendapi.error_message.ERROR_MESSAGE;
 
 import javax.validation.Constraint;
 import java.lang.annotation.ElementType;
@@ -13,7 +13,8 @@ import java.lang.annotation.Target;
 @Retention(RetentionPolicy.RUNTIME)
 @Constraint(validatedBy = PasswordValidator.class)
 public @interface Password {
-    String message() default "Password should contain blah blah";
+    String message() default ERROR_MESSAGE.WEAK_PASSWORD;
     Class[] groups() default {};
     Class[] payload() default {};
+
 }

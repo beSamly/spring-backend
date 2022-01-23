@@ -1,6 +1,6 @@
 package com.backendapi.entity;
 
-import com.backendapi.annotation.IsEmail;
+import com.backendapi.custom_constraint.Password;
 
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -14,7 +14,6 @@ public class Employee {
     @GeneratedValue
     Long id;
 
-    @IsEmail
     private String name;
     private String role;
 

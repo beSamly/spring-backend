@@ -1,18 +1,19 @@
-package com.backendapi.annotation.validator;
+package com.backendapi.custom_constraint.validator;
 
-import com.backendapi.annotation.IsEmail;
+
+import com.backendapi.custom_constraint.IsEmail;
 
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class EmailValidator implements ConstraintValidator<IsEmail, String> { // 1
+public class EmailValidator implements ConstraintValidator<IsEmail, String> {
 
     @Override
     public void initialize(IsEmail emailUnique) {
     }
 
     @Override
-    public boolean isValid(String value, ConstraintValidatorContext context) { // 2
+    public boolean isValid(String value, ConstraintValidatorContext context) {
         if (value == null) {
             return false;
         }
