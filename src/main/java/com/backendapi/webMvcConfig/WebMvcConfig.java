@@ -22,9 +22,14 @@ public class WebMvcConfig implements WebMvcConfigurer {
     public void addInterceptors(InterceptorRegistry registry) {
 //        registry.addInterceptor(this.requestInterceptor);
 
+      this.addAuthInterceptor(registry);
+    }
+
+    public void addAuthInterceptor(InterceptorRegistry registry){
         ArrayList<String> list = new ArrayList<String>();
         list.add("/employees");
         list.add("/employees/**");
+        list.add("/group/**");
         registry.addInterceptor(this.authInterceptor).addPathPatterns(list);
     }
 }

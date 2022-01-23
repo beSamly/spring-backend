@@ -3,12 +3,12 @@
     "maindb": {
       "url": "jdbc:mysql://localhost:3306/maindb",
       "username": "root",
-      "password": "vespa"
+      "password": "password"
     },
     "commondb": {
       "url": "jdbc:mysql://localhost:3306/commondb",
       "username": "root",
-      "password": "vespa"
+      "password": "password"
     }
   }
 }

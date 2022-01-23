@@ -9,6 +9,7 @@ import org.springframework.stereotype.Component;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+
 import com.fasterxml.jackson.databind.ObjectMapper;
 
 @Component
@@ -22,7 +23,12 @@ public class ConfigService {
     public ConfigService(Environment enviroment) {
         this.env = enviroment.getProperty("env");
         this.group = enviroment.getProperty("group");
-        System.out.println(enviroment);
+
+        if (this.env == null || this.group == null) {
+            System.out.println("Please provide following program arguments [env, group]");
+            System.exit(-1);
+            return;
+        }
         this.init();
     }
 
@@ -40,7 +46,7 @@ public class ConfigService {
             e.printStackTrace();
         } catch (IOException e) {
             e.printStackTrace();
-        } catch(RuntimeException e){
+        } catch (RuntimeException e) {
             e.printStackTrace();
         }
     }

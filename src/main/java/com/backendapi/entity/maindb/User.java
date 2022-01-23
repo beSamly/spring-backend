@@ -2,7 +2,9 @@ package com.backendapi.entity.maindb;
 
 import com.backendapi.custom_constraint.Password;
 import com.backendapi.service.SecurityHelper;
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.validator.constraints.Length;
 
@@ -14,6 +16,8 @@ import javax.validation.constraints.Email;
 @Getter
 @Setter
 @Entity
+@AllArgsConstructor
+@NoArgsConstructor
 public class User {
 
     private @Id @GeneratedValue Long id;
@@ -29,11 +33,5 @@ public class User {
 
     private String password;
 
-    public User(Long id, String firstName, String lastName, String email, String password) {
-        this.id = id;
-        this.firstName = firstName;
-        this.lastName = lastName;
-        this.email = email;
-        this.password = SecurityHelper.hash(password);
-    }
+    private String profileUrl;
 }

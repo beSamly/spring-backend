@@ -16,7 +16,9 @@ import java.time.LocalDateTime;
 @Entity
 @AllArgsConstructor
 @Table(indexes = {
-        @Index(name="createdTime", columnList = "createdTime")
+        @Index(name="groupId", columnList = "groupId"),
+        @Index(name="channelId", columnList = "channelId"),
+        @Index(name="senderId", columnList = "senderId"),
 })
 public class Message {
 
@@ -24,11 +26,13 @@ public class Message {
     @GeneratedValue
     Long id;
 
-    @Length(max=15)
     private Long senderId;
 
-    @Length(max=15)
-    private String groupId;
+    private Long groupId;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="channelId")
+    private Channel channel;
 
     private String content;
 
