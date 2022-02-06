@@ -1,6 +1,7 @@
 package com.backendapi.entity.maindb;
 
 import com.backendapi.custom_constraint.Password;
+import com.backendapi.dto.user.UserDTO;
 import com.backendapi.service.SecurityHelper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -20,12 +21,14 @@ import javax.validation.constraints.Email;
 @NoArgsConstructor
 public class User {
 
-    private @Id @GeneratedValue Long id;
+    private @Id
+    @GeneratedValue
+    Long id;
 
-    @Length(max=15)
+    @Length(max = 15)
     private String firstName;
 
-    @Length(max=15)
+    @Length(max = 15)
     private String lastName;
 
     @Email
@@ -34,4 +37,8 @@ public class User {
     private String password;
 
     private String profileUrl;
+
+    public UserDTO toDTO() {
+        return new UserDTO(this.id, this.firstName, this.lastName, this.email, this.profileUrl);
+    }
 }

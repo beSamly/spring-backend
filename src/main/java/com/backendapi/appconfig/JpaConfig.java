@@ -9,19 +9,13 @@ import javax.sql.DataSource;
 @Configuration
 public class JpaConfig {
 
-    private final ConfigService configService;
-
-    public JpaConfig(ConfigService configService) {
-        this.configService = configService;
-    }
-
     @Bean
     public DataSource getDataSource() {
         DataSourceBuilder dataSourceBuilder = DataSourceBuilder.create();
         dataSourceBuilder.driverClassName("com.mysql.jdbc.Driver");
-        dataSourceBuilder.url(this.configService.mainDbConfig.getUrl());
-        dataSourceBuilder.username(this.configService.mainDbConfig.getUsername());
-        dataSourceBuilder.password(this.configService.mainDbConfig.getPassword());
+        dataSourceBuilder.url(ConfigService.mainDbConfig.getUrl());
+        dataSourceBuilder.username(ConfigService.mainDbConfig.getUsername());
+        dataSourceBuilder.password(ConfigService.mainDbConfig.getPassword());
         return dataSourceBuilder.build();
     }
 }

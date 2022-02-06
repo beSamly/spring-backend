@@ -1,5 +1,6 @@
 package com.backendapi;
 
+import com.backendapi.appconfig.ConfigService;
 import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 import org.springframework.context.ApplicationContext;
@@ -7,19 +8,35 @@ import org.springframework.context.ApplicationContext;
 @SpringBootApplication
 public class SpringBackendApplication {
 
-	public static void main(String[] args) {
+    public static void main(String[] args) {
 
-		ApplicationContext context = SpringApplication.run(SpringBackendApplication.class, args);
-//		HashMap<String, IPacketHandler> handlers = new HashMap<String, IPacketHandler>();
+        String group = args[0];
+        String env = args[1];
+        String serverType = args[2];
+        ConfigService.init(group, env, serverType);
 
-//		EmployeeRepository employeeRepository = context.getBean(EmployeeRepository.class);
-//		List<Employee> employeeList = employeeRepository.findAll();
+        if (serverType.equals("mainserver")) {
 
-		SocketServer socketServer = context.getBean(SocketServer.class);
-		socketServer.startListening();
+            ApplicationContext context = SpringApplication.run(SpringBackendApplication.class, args);
+            SocketServer socketServer = context.getBean(SocketServer.class);
+            DeliveryServerClient deliveryServerClient = context.getBean(DeliveryServerClient.class);
 
-//		handlers.put("loginHandler", new HandleLogin());
-//		SocketServer.initHanlders(handlers);
-//		SocketServer.test();
-	}
+            new Thread() {
+                public void run() {
+                    deliveryServerClient.startListening();
+                }
+            }.start();
+
+            new Thread() {
+                public void run() {
+                    socketServer.startListening();
+                }
+            }.start();
+
+
+        } else if (serverType.equals("deliveryserver")) {
+            DeliveryServer deliveryServer = new DeliveryServer();
+            deliveryServer.startListening();
+        }
+    }
 }

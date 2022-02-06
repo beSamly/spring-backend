@@ -1,14 +1,13 @@
 package com.backendapi.controller;
 
-import static org.hamcrest.Matchers.containsString;
 import static org.hamcrest.Matchers.equalTo;
-import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.result.MockMvcResultHandlers.print;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-import com.backendapi.error_message.ERROR_MESSAGE;
+import com.backendapi.constants.ERROR_MESSAGE;
+import com.backendapi.constants.RESPONSE_RESULT_TYPE;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
@@ -39,11 +38,11 @@ public class AuthControllerTest {
 
         this.mockMvc
                 .perform(post("/auth/signup")
-                .contentType(MediaType.APPLICATION_JSON)
-                .content(content))
-                .andDo(print())
+                        .contentType(MediaType.APPLICATION_JSON)
+                        .content(content))
                 .andExpect(status().isBadRequest())
-                .andExpect(jsonPath("$.error").value(equalTo(ERROR_MESSAGE.INVALID_EMAIL)));
+                .andExpect(jsonPath("$.result").value(equalTo(RESPONSE_RESULT_TYPE.INVALID_INPUT)))
+                .andExpect(jsonPath("$.message").value(equalTo(ERROR_MESSAGE.INVALID_EMAIL)));
 
  /*       this.mockMvc.perform(post("/auth/signup")).andDo(print()).andExpect(status().isOk())
                 .andExpect(content().string(containsString("Hello, Mock")));

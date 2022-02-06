@@ -1,7 +1,7 @@
 package com.backendapi.custom_constraint;
 
 import com.backendapi.custom_constraint.validator.PasswordValidator;
-import com.backendapi.error_message.ERROR_MESSAGE;
+import com.backendapi.constants.ERROR_MESSAGE;
 
 import javax.validation.Constraint;
 import java.lang.annotation.ElementType;

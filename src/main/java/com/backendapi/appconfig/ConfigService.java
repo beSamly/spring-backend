@@ -1,47 +1,58 @@
 package com.backendapi.appconfig;
 
-import com.backendapi.dto.DatabaseConfig;
+import com.backendapi.json.DatabaseConfigJson;
+import com.backendapi.json.ServerConfigJson;
 import com.fasterxml.jackson.databind.JsonNode;
-import org.springframework.core.env.Environment;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import lombok.Getter;
 import org.springframework.core.io.ClassPathResource;
-import org.springframework.stereotype.Component;
 
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-
-@Component
+@Getter
 public class ConfigService {
 
-    public String env;
-    public String group;
-    public DatabaseConfig mainDbConfig;
-    public DatabaseConfig commonDbConfig;
+    static String env;
+    static String group;
+    static String serverType;
+    static DatabaseConfigJson mainDbConfig;
+    static DatabaseConfigJson commonDbConfig;
+    static ServerConfigJson mainServerConfig;
+    static ServerConfigJson deliveryServerConfig;
+    static ServerConfigJson socketServerConfig;
 
-    public ConfigService(Environment enviroment) {
-        this.env = enviroment.getProperty("env");
-        this.group = enviroment.getProperty("group");
+    public static void init(String groupParam, String envParam, String serverTypeParam) {
 
-        if (this.env == null || this.group == null) {
-            System.out.println("Please provide following program arguments [env, group]");
+        env = envParam;
+        group = groupParam;
+        serverType = serverTypeParam;
+
+        if (env == null) {
+            System.out.println("Please provide env");
             System.exit(-1);
-            return;
         }
-        this.init();
-    }
 
-    private void init() {
+        if (group == null) {
+            System.out.println("Please provide group");
+            System.exit(-1);
+        }
+
+        if (serverType == null) {
+            System.out.println("Please provide type");
+            System.exit(-1);
+        }
 
         try {
-            File jsonFile = new ClassPathResource(String.format("config/%s/config.json", this.env)).getFile();
-// or
+            File jsonFile = new ClassPathResource(String.format("config/%s/config.json", env)).getFile();
             ObjectMapper objectMapper = new ObjectMapper();
             JsonNode node = objectMapper.readTree(jsonFile);
-//            this.mainDbConfig = (DatabaseConfig) node.get("database").get("maindb");
-            this.mainDbConfig = objectMapper.convertValue(node.get("database").get("maindb"), DatabaseConfig.class);
-            this.commonDbConfig = objectMapper.convertValue(node.get("database").get("maindb"), DatabaseConfig.class);
+            mainDbConfig = objectMapper.convertValue(node.get("database").get("mainDb"), DatabaseConfigJson.class);
+            commonDbConfig = objectMapper.convertValue(node.get("database").get("mainDb"), DatabaseConfigJson.class);
+            mainServerConfig = objectMapper.convertValue(node.get("server").get("mainServer"), ServerConfigJson.class);
+            deliveryServerConfig = objectMapper.convertValue(node.get("server").get("deliveryServer"), ServerConfigJson.class);
+            socketServerConfig = objectMapper.convertValue(node.get("server").get("socketServer"), ServerConfigJson.class);
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -51,4 +62,21 @@ public class ConfigService {
         }
     }
 
+    public static ServerConfigJson getServerConfig() {
+        if (serverType.equals("mainserver")) {
+            return mainServerConfig;
+        } else if (serverType.equals("deliveryserver")) {
+            return deliveryServerConfig;
+        } else {
+            return null;
+        }
+    }
+
+    public static ServerConfigJson getSocketServerConfig(){
+        return socketServerConfig;
+    }
+
+    public static ServerConfigJson getDeliveryServerConfig(){
+        return deliveryServerConfig;
+    }
 }

@@ -1,38 +1,47 @@
 package com.backendapi.entity.maindb;
 
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import lombok.Setter;
+import com.backendapi.dto.channel.ChannelDTO;
+import lombok.*;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
+
 
 @Getter
 @Setter
 @Entity
-@AllArgsConstructor
 @NoArgsConstructor
+@AllArgsConstructor
 public class Channel {
 
     private @Id
     @GeneratedValue
     Long channelId;
 
-    @Length(min = 5, max = 15)
+    @Length(min = 5, max = 25)
     private String channelName;
 
     private Boolean isPrivate;
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name="groupdId")
+    private Group group = new Group();
 
     @ManyToMany
     @JoinTable(name = "ChannelMember",
             joinColumns = @JoinColumn(name = "channelId"),
             inverseJoinColumns = @JoinColumn(name = "userId")
     )
-    private List<User> channelMembers;
+    private List<User> channelMembers = new ArrayList<User>();
 
     @OneToMany(mappedBy = "channel", fetch = FetchType.LAZY)
-    private List<Message> messages;
+    private List<Message> messages = new ArrayList<Message>();
+
+
+    public ChannelDTO toDTO() {
+        return new ChannelDTO(this.channelId, this.channelName, this.isPrivate, this.channelMembers.stream().map(User::toDTO).collect(Collectors.toList()));
+    }
 }

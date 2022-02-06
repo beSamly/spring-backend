@@ -1,7 +1,9 @@
 package com.backendapi.exception;
 
-public class UnauthorizedException extends CustomException{
+import com.backendapi.constants.RESPONSE_RESULT_TYPE;
+
+public class UnauthorizedException extends CustomException {
     public UnauthorizedException(String message) {
-        super(message);
+        super(message, RESPONSE_RESULT_TYPE.UNAUTHENTICATED);
     }
 }

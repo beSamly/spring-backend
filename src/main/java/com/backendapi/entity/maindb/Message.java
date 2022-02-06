@@ -1,10 +1,15 @@
 package com.backendapi.entity.maindb;
 
+import com.backendapi.dto.message.MessageDTO;
 import com.backendapi.service.SecurityHelper;
+import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonManagedReference;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.hibernate.annotations.CreationTimestamp;
+import org.hibernate.annotations.FetchMode;
 import org.hibernate.validator.constraints.Length;
 
 import javax.persistence.*;
@@ -15,10 +20,9 @@ import java.time.LocalDateTime;
 @Setter
 @Entity
 @AllArgsConstructor
+@NoArgsConstructor
 @Table(indexes = {
-        @Index(name="groupId", columnList = "groupId"),
-        @Index(name="channelId", columnList = "channelId"),
-        @Index(name="senderId", columnList = "senderId"),
+        @Index(name = "senderId", columnList = "senderId"),
 })
 public class Message {
 
@@ -28,14 +32,17 @@ public class Message {
 
     private Long senderId;
 
-    private Long groupId;
-
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="channelId")
+    @JsonBackReference
+    @JoinColumn(name = "channelId")
     private Channel channel;
 
     private String content;
 
     @CreationTimestamp
     private LocalDateTime createdTime;
+
+    public MessageDTO toDTO() {
+        return new MessageDTO(this.id, this.senderId, this.channel.getChannelId(), this.content, this.createdTime);
+    }
 }

@@ -1,14 +1,25 @@
 {
   "database": {
-    "maindb": {
+    "mainDb": {
       "url": "jdbc:mysql://localhost:3306/maindb",
       "username": "root",
       "password": "password"
     },
-    "commondb": {
+    "commonDb": {
       "url": "jdbc:mysql://localhost:3306/commondb",
       "username": "root",
       "password": "password"
+    }
+  },
+  "server": {
+    "mainServer": {
+      "port": 3000
+    },
+    "deliveryServer": {
+      "port": 8000
+    },
+    "socketServer": {
+      "port": 13000
     }
   }
 }

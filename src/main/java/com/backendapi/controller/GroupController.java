@@ -1,7 +1,9 @@
 package com.backendapi.controller;
 
+import com.backendapi.dto.ResponseDTO;
 import com.backendapi.dto.group.CreateGroupDTO;
 //import com.backendapi.entity.maindb.Group;
+import com.backendapi.dto.group.GroupDTO;
 import com.backendapi.entity.maindb.Group;
 import com.backendapi.entity.maindb.GroupTag;
 import com.backendapi.entity.maindb.User;
@@ -10,6 +12,8 @@ import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
 import java.util.ArrayList;
+import java.util.List;
+import java.util.stream.Collectors;
 
 @RestController
 @RequestMapping("/group")
@@ -21,28 +25,28 @@ public class GroupController {
         this.groupRepository = groupRepository;
     }
 
+    @GetMapping("/get")
+    public List<GroupDTO> getGroups() {
+        List<Group> groups = this.groupRepository.findAll();
+        return groups.stream().map(Group::toDTO).collect(Collectors.toList());
+    }
+
     @PostMapping("/create")
-    Group createGroup(@RequestBody @Valid CreateGroupDTO createGroupDTO, @RequestAttribute("user") User user) {
+    public ResponseDTO<GroupDTO> createGroup(@RequestBody @Valid CreateGroupDTO createGroupDTO, @RequestAttribute("user") User user) {
         Group newGroup = new Group();
         newGroup.setGroupName(createGroupDTO.getGroupName());
         newGroup.setIsPrivate(createGroupDTO.getIsPrivate());
 
-        ArrayList<GroupTag> groupTags = new ArrayList<GroupTag>();
         createGroupDTO.getTags().stream().forEach(tag -> {
             GroupTag groupTag = new GroupTag(newGroup, tag);
-            groupTags.add(groupTag);
+            newGroup.addGroupTag(groupTag);
         });
 
-        newGroup.setTags(groupTags);
-        newGroup.setGroupOwners(new ArrayList<User>() {
-            {
-                add(user);
-            }
-        });
+        newGroup.addGroupMember(user);
+        newGroup.addGroupOwner(user);
 
-        Group creatdGroup = this.groupRepository.save(newGroup);
+        Group createdGroup = this.groupRepository.save(newGroup);
 
-        return creatdGroup;
+        return new ResponseDTO<GroupDTO>(createdGroup.toDTO());
     }
-
 }

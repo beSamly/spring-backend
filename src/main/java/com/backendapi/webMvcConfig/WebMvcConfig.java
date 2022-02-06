@@ -1,6 +1,8 @@
 package com.backendapi.webMvcConfig;
 
 import com.backendapi.interceptor.AuthInterceptor;
+import com.backendapi.interceptor.ChannelInfoInterceptor;
+import com.backendapi.interceptor.GroupInfoInterceptor;
 import com.backendapi.interceptor.RequestInterceptor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
@@ -13,9 +15,13 @@ public class WebMvcConfig implements WebMvcConfigurer {
 
 //    private final RequestInterceptor requestInterceptor;
     private final AuthInterceptor authInterceptor;
+    private final GroupInfoInterceptor groupInfoInterceptor;
+    private final ChannelInfoInterceptor channelInfoInterceptor;
 
-    public WebMvcConfig(AuthInterceptor authInterceptor) {
+    public WebMvcConfig(AuthInterceptor authInterceptor, GroupInfoInterceptor groupInfoInterceptor, ChannelInfoInterceptor channelInfoInterceptor) {
         this.authInterceptor = authInterceptor;
+        this.groupInfoInterceptor = groupInfoInterceptor;
+        this.channelInfoInterceptor = channelInfoInterceptor;
 //        this.requestInterceptor = requestInterceptor;
     }
 
@@ -23,13 +29,26 @@ public class WebMvcConfig implements WebMvcConfigurer {
 //        registry.addInterceptor(this.requestInterceptor);
 
       this.addAuthInterceptor(registry);
+      this.addGroupInfoInterceptor(registry);
+      this.addChannelInfoInterceptor(registry);
     }
 
     public void addAuthInterceptor(InterceptorRegistry registry){
         ArrayList<String> list = new ArrayList<String>();
-        list.add("/employees");
-        list.add("/employees/**");
-        list.add("/group/**");
+        list.add("/**");
+
         registry.addInterceptor(this.authInterceptor).addPathPatterns(list);
+    }
+
+    public void addGroupInfoInterceptor(InterceptorRegistry registry){
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("/channel/**");
+        registry.addInterceptor(this.groupInfoInterceptor).addPathPatterns(list);
+    }
+
+    public void addChannelInfoInterceptor(InterceptorRegistry registry){
+        ArrayList<String> list = new ArrayList<String>();
+        list.add("/message/**");
+        registry.addInterceptor(this.channelInfoInterceptor).addPathPatterns(list);
     }
 }

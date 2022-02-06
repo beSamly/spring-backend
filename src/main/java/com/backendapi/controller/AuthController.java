@@ -3,6 +3,7 @@ package com.backendapi.controller;
 import com.backendapi.dto.SignInDTO;
 import com.backendapi.dto.SignUpDTO;
 import com.backendapi.dto.SuccessDTO;
+import com.backendapi.dto.user.UserDTO;
 import com.backendapi.entity.maindb.User;
 import com.backendapi.repository.AuthRepository;
 import com.fasterxml.jackson.core.JsonProcessingException;
@@ -30,7 +31,7 @@ public class AuthController {
     }
 
     @PostMapping("/signup")
-    User signUp(@RequestBody @Valid SignUpDTO signUpDto) {
+    UserDTO signUp(@RequestBody @Valid SignUpDTO signUpDto) {
 
         User newUser = new User();
         newUser.setEmail(signUpDto.getEmail());
@@ -39,7 +40,6 @@ public class AuthController {
         newUser.setProfileUrl(null);
         authRepository.save(newUser);
 
-        return newUser;
+        return newUser.toDTO();
     }
-
 }

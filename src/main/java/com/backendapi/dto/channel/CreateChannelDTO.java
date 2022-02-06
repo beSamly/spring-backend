@@ -1,4 +1,5 @@
-package com.backendapi.dto.group;
+package com.backendapi.dto.channel;
+
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
@@ -7,23 +8,17 @@ import lombok.Setter;
 
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
-import javax.validation.constraints.Size;
-import java.util.ArrayList;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateGroupDTO {
+public class CreateChannelDTO {
 
     @NotBlank
     @NotNull
-    private String groupName;
+    private String channelName;
 
     @NotNull
     private Boolean isPrivate;
-
-    @Size(min = 3, max = 5)
-    @NotNull
-    private ArrayList<String> tags;
 }

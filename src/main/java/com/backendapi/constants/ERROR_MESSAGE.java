@@ -1,4 +1,4 @@
-package com.backendapi.error_message;
+package com.backendapi.constants;
 
 public class ERROR_MESSAGE {
     public static final String INVALID_EMAIL = "Invalid email";

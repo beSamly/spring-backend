@@ -1,8 +1,7 @@
 package com.backendapi.advice;
 
+import com.backendapi.constants.RESPONSE_RESULT_TYPE;
 import com.backendapi.dto.ErrorResponse;
-import com.backendapi.dto.ExceptionResponse;
-import com.backendapi.dto.MyErrResponse;
 import com.backendapi.exception.CustomException;
 import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpStatus;
@@ -14,28 +13,26 @@ import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.context.request.WebRequest;
 import org.springframework.web.servlet.mvc.method.annotation.ResponseEntityExceptionHandler;
 
-import java.time.LocalDateTime;
-
 @ControllerAdvice
 public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
 
     @ExceptionHandler(RuntimeException.class)
-    public ResponseEntity<Object> handleExceptions(RuntimeException exception, WebRequest webRequest) {
+    public ResponseEntity<ErrorResponse> handleExceptions(RuntimeException exception, WebRequest webRequest) {
         /*TODO 런타임 exception은 로깅 or 메세지 alert*/
-        ResponseEntity<Object> entity = new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.BAD_REQUEST);
-        return entity;
+        ErrorResponse e = new ErrorResponse(RESPONSE_RESULT_TYPE.RUNTIME_EXCEPTION, exception.getMessage());
+        return new ResponseEntity<ErrorResponse>(e, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(CustomException.class)
-    public ResponseEntity<Object> handleExceptions(CustomException exception, WebRequest webRequest) {
-        ResponseEntity<Object> entity = new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.BAD_REQUEST);
-        return entity;
+    public ResponseEntity<ErrorResponse> handleExceptions(CustomException exception, WebRequest webRequest) {
+        ErrorResponse e = new ErrorResponse(exception.getResultType(), exception.getMessage());
+        return new ResponseEntity<ErrorResponse>(e, HttpStatus.BAD_REQUEST);
     }
 
     @ExceptionHandler(TransactionSystemException.class)
-    public ResponseEntity<Object> handleExceptions(TransactionSystemException exception, WebRequest webRequest) {
-        ResponseEntity<Object> entity = new ResponseEntity<>(new ErrorResponse(exception.getMessage()), HttpStatus.BAD_REQUEST);
-        return entity;
+    public ResponseEntity<ErrorResponse> handleExceptions(TransactionSystemException exception, WebRequest webRequest) {
+        ErrorResponse e = new ErrorResponse(RESPONSE_RESULT_TYPE.TRANSACTION_SYSTEM_EXCEPTION, exception.getMessage());
+        return new ResponseEntity<ErrorResponse>(e, HttpStatus.BAD_REQUEST);
     }
 
     @Override
@@ -43,6 +40,7 @@ public class GlobalExceptionHandler extends ResponseEntityExceptionHandler {
                                                                   HttpHeaders headers, HttpStatus status, WebRequest request) {
         String field = ex.getBindingResult().getFieldErrors().get(0).getField();
         String defaultMessage = ex.getBindingResult().getFieldErrors().get(0).getDefaultMessage();
-        return new ResponseEntity<>(new ErrorResponse(String.format("%s %s", field, defaultMessage)), HttpStatus.BAD_REQUEST);
+        ErrorResponse e = new ErrorResponse(RESPONSE_RESULT_TYPE.INVALID_INPUT, String.format("%s %s", field, defaultMessage));
+        return new ResponseEntity<Object>(e, HttpStatus.BAD_REQUEST);
     }
 }
