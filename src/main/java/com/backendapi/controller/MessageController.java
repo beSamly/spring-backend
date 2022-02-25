@@ -1,13 +1,15 @@
 package com.backendapi.controller;
 
-import com.backendapi.DeliveryServerClient;
-import com.backendapi.dto.ResponseDTO;
-import com.backendapi.dto.channel.CreateChannelDTO;
-import com.backendapi.dto.group.CreateGroupDTO;
+import com.backendapi.constants.EVENT_TYPE;
+import com.backendapi.dto.SuccessResponse;
 import com.backendapi.dto.message.CreateMessageDTO;
 import com.backendapi.dto.message.MessageDTO;
 import com.backendapi.entity.maindb.*;
+import com.backendapi.event.Event;
+import com.backendapi.manager.EventManager;
 import com.backendapi.repository.MessageRepository;
+import com.backendapi.service.MessageService;
+import com.backendapi.socket_message.MessageAlert;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -19,17 +21,19 @@ import java.util.stream.Collectors;
 public class MessageController {
 
     private final MessageRepository messageRepository;
-    private final DeliveryServerClient deliveryServerClient;
+    private final EventManager eventManager;
+    private final MessageService messageService;
 
-    public MessageController(MessageRepository messageRepository, DeliveryServerClient deliveryServerClient) {
+    public MessageController(MessageRepository messageRepository, MessageService messageService, EventManager eventManager) {
         this.messageRepository = messageRepository;
-        this.deliveryServerClient = deliveryServerClient;
+        this.eventManager = eventManager;
+        this.messageService = messageService;
     }
 
     @GetMapping("/{channelId}")
-    public ResponseDTO<List<MessageDTO>> getMessageOfChannel(@PathVariable @Valid Long channelId) {
+    public SuccessResponse<List<MessageDTO>> getMessageOfChannel(@PathVariable @Valid Long channelId) {
         List<Message> messages = this.messageRepository.findByChannelId(channelId);
-        return new ResponseDTO<List<MessageDTO>>(messages.stream().map(Message::toDTO).collect(Collectors.toList()));
+        return new SuccessResponse<List<MessageDTO>>(messages.stream().map(Message::toDTO).collect(Collectors.toList()));
     }
 
     @GetMapping("/all")
@@ -42,16 +46,24 @@ public class MessageController {
     }
 
     @PostMapping("/create")
-    public ResponseDTO<MessageDTO> sendMessageToChannel(@RequestBody @Valid CreateMessageDTO createMessageDTO, @RequestAttribute("user") User user, @RequestAttribute("channel") Channel channel) {
+    public SuccessResponse<MessageDTO> sendMessageToChannel(@RequestBody @Valid CreateMessageDTO createMessageDTO, @RequestAttribute("user") User user, @RequestAttribute("channel") Channel channel) {
 
         Message newMessage = new Message();
         newMessage.setSenderId(user.getId());
         newMessage.setChannel(channel);
         newMessage.setContent(createMessageDTO.getContent());
-        this.messageRepository.save(newMessage);
+        this.messageService.saveMessage(newMessage);
+//        this.messageRepository.save(newMessage);
 
-        deliveryServerClient.sendDataToDeliveryServer(createMessageDTO.getContent());
-        return new ResponseDTO<MessageDTO>(newMessage.toDTO());
+        List<Integer> receiverIds = channel.getChannelMemberIds();
+
+        MessageAlert message = new MessageAlert();
+        message.setReceiverIds(receiverIds);
+        message.setChannelId(channel.getChannelId());
+        message.setContent(createMessageDTO.getContent());
+
+
+        this.eventManager.emit(new Event(EVENT_TYPE.MESSAGE_TO_BROADCAST_SERVER, message.toString()));
+        return new SuccessResponse<MessageDTO>(newMessage.toDTO());
     }
-
 }

@@ -1,6 +1,6 @@
 package com.backendapi.controller;
 
-import com.backendapi.dto.ResponseDTO;
+import com.backendapi.dto.SuccessResponse;
 import com.backendapi.dto.group.CreateGroupDTO;
 //import com.backendapi.entity.maindb.Group;
 import com.backendapi.dto.group.GroupDTO;
@@ -11,7 +11,6 @@ import com.backendapi.repository.GroupRepository;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -32,7 +31,7 @@ public class GroupController {
     }
 
     @PostMapping("/create")
-    public ResponseDTO<GroupDTO> createGroup(@RequestBody @Valid CreateGroupDTO createGroupDTO, @RequestAttribute("user") User user) {
+    public SuccessResponse<GroupDTO> createGroup(@RequestBody @Valid CreateGroupDTO createGroupDTO, @RequestAttribute("user") User user) {
         Group newGroup = new Group();
         newGroup.setGroupName(createGroupDTO.getGroupName());
         newGroup.setIsPrivate(createGroupDTO.getIsPrivate());
@@ -47,6 +46,6 @@ public class GroupController {
 
         Group createdGroup = this.groupRepository.save(newGroup);
 
-        return new ResponseDTO<GroupDTO>(createdGroup.toDTO());
+        return new SuccessResponse<GroupDTO>(createdGroup.toDTO());
     }
 }

@@ -6,19 +6,15 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotNull;
+import java.util.List;
 
 @Getter
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
-public class CreateChannelDTO {
-
-    @NotBlank
-    @NotNull
-    private String channelName;
+public class CreateDMChannelDTO {
 
     @NotNull
-    private Boolean isPrivate;
+    private List<Long> userIds;
 }

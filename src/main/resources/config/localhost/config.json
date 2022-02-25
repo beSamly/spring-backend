@@ -15,11 +15,18 @@
     "mainServer": {
       "port": 3000
     },
-    "deliveryServer": {
-      "port": 8000
-    },
-    "socketServer": {
+    "eventServer": {
       "port": 13000
     }
+  },
+  "redis": {
+    "redisPubSub": {
+      "ip": "127.0.0.1",
+      "port": 6379,
+      "password": "sammylee"
+    }
+  },
+  "jwt": {
+    "key": "a4i537bvrv1o43nb12"
   }
 }

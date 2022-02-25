@@ -13,7 +13,7 @@ public class SignInDTO {
     @IsEmail
     private String email;
 
-    @Min(message = "금액은 5000원이상이여야 합니다", value = 5000)
+//    @Min(message = "금액은 5000원이상이여야 합니다", value = 5000)
     @NotBlank
     @NotNull
     private String password;

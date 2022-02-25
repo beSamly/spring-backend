@@ -1,31 +1,21 @@
 package com.backendapi.dto;
 
-public class SuccessResponse<T> {
-    private SuccessDTO<T> response;
+import com.backendapi.constants.RESPONSE_RESULT_TYPE;
+import lombok.Getter;
+import lombok.Setter;
 
-    public SuccessDTO<T> getResponse() {
-        return response;
+@Getter
+@Setter
+public class SuccessResponse<T> extends BaseResponse {
+
+    private T data;
+
+    public SuccessResponse() {
+        super(RESPONSE_RESULT_TYPE.SUCCESS);
     }
 
-    public void setResponse(SuccessDTO<T> response) {
-        this.response = response;
+    public SuccessResponse(T t) {
+        super(RESPONSE_RESULT_TYPE.SUCCESS);
+        this.data = t;
     }
-
-    public SuccessResponse(T object) {
-        this.response = new SuccessDTO<>(object);
-    }
-
-    public SuccessResponse(T object, String message) {
-        this.response = new SuccessDTO<>(object, message);
-    }
-
-    public SuccessResponse(T object, Integer length, String message) {
-        this.response = new SuccessDTO<>(object, length, message);
-    }
-
-    public SuccessResponse(T object, Integer length) {
-        this.response = new SuccessDTO<>(object, length);
-    }
-
-
 }

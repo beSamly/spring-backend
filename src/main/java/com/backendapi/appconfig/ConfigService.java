@@ -1,6 +1,7 @@
 package com.backendapi.appconfig;
 
 import com.backendapi.json.DatabaseConfigJson;
+import com.backendapi.json.RedisConfig;
 import com.backendapi.json.ServerConfigJson;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
@@ -20,13 +21,16 @@ public class ConfigService {
     static DatabaseConfigJson mainDbConfig;
     static DatabaseConfigJson commonDbConfig;
     static ServerConfigJson mainServerConfig;
-    static ServerConfigJson deliveryServerConfig;
+    static ServerConfigJson broadcastServerConfig;
     static ServerConfigJson socketServerConfig;
+    public static ServerConfigJson eventServerConfig;
+    static String jwtKey;
+    public static RedisConfig pubSubRedisConfig;
 
     public static void init(String groupParam, String envParam, String serverTypeParam) {
 
-        env = envParam;
         group = groupParam;
+        env = envParam;
         serverType = serverTypeParam;
 
         if (env == null) {
@@ -51,8 +55,12 @@ public class ConfigService {
             mainDbConfig = objectMapper.convertValue(node.get("database").get("mainDb"), DatabaseConfigJson.class);
             commonDbConfig = objectMapper.convertValue(node.get("database").get("mainDb"), DatabaseConfigJson.class);
             mainServerConfig = objectMapper.convertValue(node.get("server").get("mainServer"), ServerConfigJson.class);
-            deliveryServerConfig = objectMapper.convertValue(node.get("server").get("deliveryServer"), ServerConfigJson.class);
+            broadcastServerConfig = objectMapper.convertValue(node.get("server").get("broadcastServer"), ServerConfigJson.class);
             socketServerConfig = objectMapper.convertValue(node.get("server").get("socketServer"), ServerConfigJson.class);
+            eventServerConfig = objectMapper.convertValue(node.get("server").get("eventServer"), ServerConfigJson.class);
+            jwtKey = objectMapper.convertValue(node.get("jwt").get("key"), String.class);
+            pubSubRedisConfig = objectMapper.convertValue(node.get("redis").get("redisPubSub"), RedisConfig.class);
+
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (IOException e) {
@@ -65,18 +73,22 @@ public class ConfigService {
     public static ServerConfigJson getServerConfig() {
         if (serverType.equals("mainserver")) {
             return mainServerConfig;
-        } else if (serverType.equals("deliveryserver")) {
-            return deliveryServerConfig;
+        } else if (serverType.equals("broadcastserver")) {
+            return broadcastServerConfig;
         } else {
             return null;
         }
     }
 
-    public static ServerConfigJson getSocketServerConfig(){
+    public static ServerConfigJson getSocketServerConfig() {
         return socketServerConfig;
     }
 
-    public static ServerConfigJson getDeliveryServerConfig(){
-        return deliveryServerConfig;
+    public static ServerConfigJson getBroadcastServerConfig() {
+        return broadcastServerConfig;
+    }
+
+    public static String getJwtKey(){
+        return jwtKey;
     }
 }

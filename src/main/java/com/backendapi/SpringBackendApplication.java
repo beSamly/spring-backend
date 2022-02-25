@@ -18,25 +18,20 @@ public class SpringBackendApplication {
         if (serverType.equals("mainserver")) {
 
             ApplicationContext context = SpringApplication.run(SpringBackendApplication.class, args);
-            SocketServer socketServer = context.getBean(SocketServer.class);
-            DeliveryServerClient deliveryServerClient = context.getBean(DeliveryServerClient.class);
+            //SocketServer socketServer = context.getBean(SocketServer.class);
+            //BroadcastServerClient broadcastServerClient = context.getBean(BroadcastServerClient.class);
 
-            new Thread() {
-                public void run() {
-                    deliveryServerClient.startListening();
-                }
-            }.start();
+            //브로드케스트 서버와 소켓 통신을 할 필요가 있을 때 사용하는 코드.
+            //new Thread() {
+            //    public void run() {
+            //        broadcastServerClient.startListening();
+            //    }
+            //}.start();
 
-            new Thread() {
-                public void run() {
-                    socketServer.startListening();
-                }
-            }.start();
-
-
-        } else if (serverType.equals("deliveryserver")) {
-            DeliveryServer deliveryServer = new DeliveryServer();
-            deliveryServer.startListening();
         }
+        //else if (serverType.equals("eventserver")) {
+        //    BroadcastServer broadcastServer = new BroadcastServer();
+        //    broadcastServer.startListening();
+        //}
     }
 }

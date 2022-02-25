@@ -1,8 +1,6 @@
 package com.backendapi.entity.maindb;
 
-import com.backendapi.custom_constraint.Password;
 import com.backendapi.dto.user.UserDTO;
-import com.backendapi.service.SecurityHelper;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;

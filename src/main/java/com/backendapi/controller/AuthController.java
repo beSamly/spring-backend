@@ -2,11 +2,12 @@ package com.backendapi.controller;
 
 import com.backendapi.dto.SignInDTO;
 import com.backendapi.dto.SignUpDTO;
-import com.backendapi.dto.SuccessDTO;
+import com.backendapi.dto.auth.SignInSuccessDTO;
+import com.backendapi.dto.jwt_data.JWTData;
 import com.backendapi.dto.user.UserDTO;
 import com.backendapi.entity.maindb.User;
-import com.backendapi.repository.AuthRepository;
-import com.fasterxml.jackson.core.JsonProcessingException;
+import com.backendapi.helper.JWTHelper;
+import com.backendapi.repository.UserRepository;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.web.bind.annotation.*;
 
@@ -16,18 +17,27 @@ import javax.validation.Valid;
 @RequestMapping("/auth")
 public class AuthController {
 
-    private final AuthRepository authRepository;
+    private final UserRepository authRepository;
     private final ObjectMapper objectMapper;
 
-    public AuthController(AuthRepository authRepository, ObjectMapper objectMapper) {
+    public AuthController(UserRepository authRepository, ObjectMapper objectMapper) {
         this.authRepository = authRepository;
         this.objectMapper = objectMapper;
     }
 
     @PostMapping("/signin")
-    SignInDTO signIn(@RequestBody @Valid SignInDTO signInDto) {
+    SignInSuccessDTO signIn(@RequestBody @Valid SignInDTO signInDto) {
         System.out.println(signInDto);
-        return signInDto;
+
+        User user = authRepository.findByEmail(signInDto.getEmail());
+        if (user == null) {
+            throw new Error("");
+        }
+
+        JWTData jwtData = new JWTData(user.getId(), user.getFirstName(), user.getLastName(), user.getEmail());
+        String token = JWTHelper.createToken(jwtData);
+
+        return new SignInSuccessDTO(token);
     }
 
     @PostMapping("/signup")

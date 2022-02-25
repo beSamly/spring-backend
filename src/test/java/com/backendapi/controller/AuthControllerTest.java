@@ -16,7 +16,7 @@ import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 
 import com.backendapi.dto.SignUpDTO;
-import com.backendapi.repository.AuthRepository;
+import com.backendapi.repository.UserRepository;
 import org.junit.jupiter.api.Test;
 
 @WebMvcTest(AuthController.class)
@@ -26,7 +26,7 @@ public class AuthControllerTest {
     private MockMvc mockMvc;
 
     @MockBean
-    private AuthRepository authRepository;
+    private UserRepository authRepository;
 
     @Test
     public void greetingShouldReturnMessageFromService() throws Exception {

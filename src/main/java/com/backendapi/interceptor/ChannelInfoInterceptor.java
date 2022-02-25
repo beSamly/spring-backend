@@ -4,6 +4,7 @@ import com.backendapi.entity.maindb.Channel;
 import com.backendapi.exception.ChannelNotFoundException;
 import com.backendapi.repository.ChannelRepository;
 import com.backendapi.repository.ChannelRepository;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -24,15 +25,17 @@ public class ChannelInfoInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws ChannelNotFoundException {
-        String channelId = request.getParameter("channelId");
 
-        if(channelId == null){
+        JsonNode requestBody = (JsonNode) request.getAttribute("requestBody");
+        String channelId = String.valueOf(requestBody.get("channelId"));
+
+        if (channelId.equals("null")) {
             throw new ChannelNotFoundException("Channel Id is not defined on request parameter");
         }
 
         Optional<Channel> optionalChannel = this.channelRepository.findById(Long.parseLong(channelId));
 
-        if(optionalChannel.isPresent() == false){
+        if (optionalChannel.isPresent() == false) {
             throw new ChannelNotFoundException("Channel Id is not defined on request parameter");
         }
 

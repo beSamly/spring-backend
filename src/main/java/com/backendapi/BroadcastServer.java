@@ -1,26 +1,20 @@
 package com.backendapi;
 
 import com.backendapi.appconfig.ConfigService;
-import com.backendapi.packet.IPacketHandler;
-import com.backendapi.packet.LoginHandler;
-import com.backendapi.packet.MessageHandler;
 import org.springframework.stereotype.Service;
 
 import java.io.*;
 import java.net.ServerSocket;
 import java.net.Socket;
-import java.net.SocketException;
-import java.util.Date;
-import java.util.HashMap;
 
 @Service
-public class DeliveryServer {
+public class BroadcastServer {
 
     private int port = ConfigService.getServerConfig().getPort();
 
     public void startListening() {
         try (ServerSocket serverSocket = new ServerSocket(this.port)) {
-            System.out.println("Delivery Server is listening on port " + this.port);
+            System.out.println("Broadcast Server is listening on port " + this.port);
 
             while (true) {
                 Socket clientSocket = serverSocket.accept();
@@ -48,7 +42,7 @@ public class DeliveryServer {
                 InputStream input = clientSocket.getInputStream();
                 BufferedReader reader = new BufferedReader(new InputStreamReader(input));
                 String dataReceived = reader.readLine();
-                System.out.println("[DeliveryServer] received data : " + dataReceived);
+                System.out.println("[BroadcastServer] received data : " + dataReceived);
 
                 sendData(writer, dataReceived);
             }

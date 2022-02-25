@@ -27,10 +27,10 @@ public class Channel {
     private Boolean isPrivate;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name="groupdId")
+    @JoinColumn(name = "groupdId")
     private Group group = new Group();
 
-    @ManyToMany
+    @ManyToMany(fetch = FetchType.EAGER)
     @JoinTable(name = "ChannelMember",
             joinColumns = @JoinColumn(name = "channelId"),
             inverseJoinColumns = @JoinColumn(name = "userId")
@@ -43,5 +43,9 @@ public class Channel {
 
     public ChannelDTO toDTO() {
         return new ChannelDTO(this.channelId, this.channelName, this.isPrivate, this.channelMembers.stream().map(User::toDTO).collect(Collectors.toList()));
+    }
+
+    public List<Integer> getChannelMemberIds() {
+        return this.getChannelMembers().stream().map(User -> User.getId().intValue()).collect(Collectors.toList());
     }
 }

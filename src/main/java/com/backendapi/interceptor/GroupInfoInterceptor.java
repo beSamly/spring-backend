@@ -3,6 +3,7 @@ package com.backendapi.interceptor;
 import com.backendapi.entity.maindb.Group;
 import com.backendapi.exception.GroupNotFoundException;
 import com.backendapi.repository.GroupRepository;
+import com.fasterxml.jackson.databind.JsonNode;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 
@@ -23,15 +24,17 @@ public class GroupInfoInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler)
             throws GroupNotFoundException {
-        String groupId = request.getParameter("groupId");
 
-        if(groupId == null){
+        JsonNode requestBody = (JsonNode) request.getAttribute("requestBody");
+        String groupId = String.valueOf(requestBody.get("groupId"));
+
+        if (groupId.equals("null")) {
             throw new GroupNotFoundException("Group Id is not defined on request parameter");
         }
 
         Optional<Group> optionalGroup = this.groupRepository.findById(Long.parseLong(groupId));
 
-        if(optionalGroup.isPresent() == false){
+        if (optionalGroup.isPresent() == false) {
             throw new GroupNotFoundException("Group Id is not defined on request parameter");
         }
 

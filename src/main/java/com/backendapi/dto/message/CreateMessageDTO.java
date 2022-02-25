@@ -17,4 +17,7 @@ public class CreateMessageDTO {
     @NotBlank
     @NotNull
     private String content;
+
+    @NotNull
+    private Long channelId;
 }

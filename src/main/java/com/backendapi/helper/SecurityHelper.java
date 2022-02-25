@@ -1,4 +1,4 @@
-package com.backendapi.service;
+package com.backendapi.helper;
 
 import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
